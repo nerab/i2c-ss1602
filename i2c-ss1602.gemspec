@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = I2C::Drivers::SS1602::VERSION
   spec.authors       = ["Nicholas E. Rabenau"]
   spec.email         = ["nerab@gmx.at"]
-  spec.description   = %q{I2C driver for the SainSmart 1602 LCD display}
-  spec.summary       = %q{I2C driver for the SainSmart 1602 LCD display}
+  spec.description   = %q{Ruby driver for the SainSmart 1602 LCD display with I2C adapter}
+  spec.summary       = %q{Driver for the SainSmart 1602 LCD display}
   spec.homepage      = "https://github.com/nerab/i2c-ss1602"
   spec.license       = "MIT"
 
@@ -20,6 +20,13 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'i2c'
 
-  spec.add_development_dependency "bundler", "~> 1.3"
-  spec.add_development_dependency "rake"
+  spec.add_development_dependency 'bundler', '~> 1.3'
+  spec.add_development_dependency 'rake'
+  spec.add_development_dependency 'guard-bundler'
+  spec.add_development_dependency 'guard-minitest'
+  spec.add_development_dependency 'fakefs'
+
+  spec.add_development_dependency 'pry'
+#  spec.add_development_dependency 'pry-debug'
+  spec.add_development_dependency 'pry-stack_explorer'
 end
