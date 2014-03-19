@@ -24,7 +24,7 @@ class TestDisplay < MiniTest::Test
 
     # Not sure why assert_equal chokes if FakeFs is still active
     FakeFS.deactivate!
-    assert_equal('42', s)
+    assert_equal('TBD', s)
   end
 
   def test_text_0
@@ -32,6 +32,6 @@ class TestDisplay < MiniTest::Test
     s = File.read(@io).unpack('B*')
 
     FakeFS.deactivate!
-    assert_equal('42', s)
+    assert_equal('TBD', s)
   end
 end

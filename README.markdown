@@ -1,6 +1,6 @@
-# I2C::SS1602
+# Driver for the SainSmart 1602 LCD display
 
-TODO: Write a gem description
+This is a Ruby driver for the SainSmart 1602 LCD display with I2C adapter, ported from [raspi-gpio](https://github.com/paulbarber/raspi-gpio/blob/master/lcd_display.py).
 
 ## Installation
 
@@ -18,4 +18,8 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+  require 'i2c/drivers/ss1602'
+  display = I2C::Drivers::SS1602::Display.new('/dev/i2c-1', 0x27)
+  display.clear
+  display.text('Hello', 0)
+  display.text('World', 1)
