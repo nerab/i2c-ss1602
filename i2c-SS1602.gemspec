@@ -1,7 +1,7 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'i2c/drivers/SS1602/version'
+require 'i2c/drivers/ss1602/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "i2c-ss1602"
