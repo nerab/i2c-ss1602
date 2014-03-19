@@ -18,8 +18,8 @@ Or install it yourself as:
 
 ## Usage
 
-  require 'i2c/drivers/ss1602'
-  display = I2C::Drivers::SS1602::Display.new('/dev/i2c-1', 0x27)
-  display.clear
-  display.text('Hello', 0)
-  display.text('World', 1)
+      require 'i2c/drivers/ss1602'
+      display = I2C::Drivers::SS1602::Display.new('/dev/i2c-1', 0x27)
+      display.clear
+      display.text('Hello', 0)
+      display.text('World', 1)
