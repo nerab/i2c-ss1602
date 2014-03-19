@@ -1,0 +1,76 @@
+#!/usr/bin/env ruby
+
+require 'i2c'
+
+module I2C
+  module Drivers
+    #
+    # Driver class for the SainSmart 1602 I2C LCD Display.
+    #
+    # see https://github.com/andec/i2c
+    #
+    # Parts copied from https://github.com/paulbarber/raspi-gpio/blob/master/lcd_display.py
+    #
+    class SS1602
+
+      # commands
+      CLEARDISPLAY = 0x01
+      RETURNHOME = 0x02
+      ENTRYMODESET = 0x04
+      DISPLAYCONTROL = 0x08
+      CURSORSHIFT = 0x10
+      FUNCTIONSET = 0x20
+      SETCGRAMADDR = 0x40
+      SETDDRAMADDR = 0x80
+
+      # flags for display entry mode
+      ENTRYRIGHT = 0x00
+      ENTRYLEFT = 0x02
+      ENTRYSHIFTINCREMENT = 0x01
+      ENTRYSHIFTDECREMENT = 0x00
+
+      # flags for display on/off control
+      DISPLAYON = 0x04
+      DISPLAYOFF = 0x00
+      CURSORON = 0x02
+      CURSOROFF = 0x00
+      BLINKON = 0x01
+      BLINKOFF = 0x00
+
+      # flags for display/cursor shift
+      DISPLAYMOVE = 0x08
+      CURSORMOVE = 0x00
+      MOVERIGHT = 0x04
+      MOVELEFT = 0x00
+
+      # flags for function set
+      8BITMODE = 0x10
+      4BITMODE = 0x00
+      2LINE = 0x08
+      1LINE = 0x00
+      5x10DOTS = 0x04
+      5x8DOTS = 0x00
+
+      # flags for backlight control
+      BACKLIGHT = 0x08
+      NOBACKLIGHT = 0x00
+
+      En = 0b00000100 # Enable bit
+      Rw = 0b00000010 # Read/Write bit
+      Rs = 0b00000001 # Register select bit
+
+
+      def initialize(bus_name, device_address)
+        @bus = I2C.create(bus_name)
+        @address = device_address
+      end
+
+      def reset
+        @bus.write(@address, 0)
+      end
+    end
+  end
+end
+
+display = LCD.new('/dev/i2c-1', 0x27)
+display.reset
