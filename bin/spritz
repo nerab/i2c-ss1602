@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+
+$:.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+require 'i2c/drivers/ss1602'
+
+display = I2C::Drivers::SS1602::Display.new('/dev/i2c-1', 0x27)
+
+ARGF.each do |line|
+  line.split.each do |arg|
+    display.clear
+    display.text(arg, 0)
+    sleep 0.3
+  end
+end
+
+display.clear

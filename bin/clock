@@ -1,6 +1,0 @@
-#!/usr/bin/env ruby
-
-require 'i2c/drivers/ss1602'
-
-display = I2C::Drivers::SS1602::Display.new('/dev/i2c-1', 0x27)
-display.reset
