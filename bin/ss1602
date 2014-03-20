@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+#
+# Sample use:
+#
+# TZ='Europe/Berlin' date "+%d.%m.%Y      %H:%M Uhr   24'C" | bin/ss1602
+#
+
+$:.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+require 'i2c/drivers/ss1602'
+
+trap('INT'){
+  exit
+}
+
+ARGF.binmode
+txt = ARGF.read
+
+d = I2C::Drivers::SS1602::Display.new('/dev/i2c-1', 0x27)
+
+# Spread text over lines
+(0..(d.rows - 1)).each do |row|
+  x0 = row * d.cols
+  x1 = x0 + d.cols - 1
+
+  output = (txt[x0..x1] || '').chomp
+  d.text(output, row, true)
+end
