@@ -11,7 +11,7 @@ module I2C
       # Parts copied from https://github.com/paulbarber/raspi-gpio/blob/master/lcd_display.py
       #
       class Display
-        attr_reader :lines
+        attr_reader :rows, :cols, :cursor
 
         def initialize(bus_or_bus_name, device_address)
           if bus_or_bus_name.respond_to?(:write)
@@ -20,8 +20,12 @@ module I2C
             @device = BusDevice.new(I2C.create(bus_or_bus_name), device_address)
           end
 
-          @lines = 0..1
+          @rows = 2
+          @cols = 16
+
           init_sequence
+
+          @cursor = Cursor.new(self)
         end
 
         def clear
@@ -29,23 +33,42 @@ module I2C
           write(COMMAND_RETURNHOME)
         end
 
-        def text(string, line)
-          case line
+        def text(string, row, pad = false)
+          case row
           when 0
             write(0x80)
           when 1
             write(0xC0)
           else
-            raise "Only lines #{@lines} are supported"
+            raise "Only rows #{0..(@rows - 1)} are supported"
           end
+
+          # Right-pad with spaces so that the line only shows string
+          string = sprintf('%-1$*2$s', string, @cols) if pad
 
           string.each_char do |c|
             write(c.ord, BIT_RS)
           end
         end
 
+        def on
+          write(COMMAND_DISPLAYCONTROL | FLAG_DISPLAYON)
+        end
+
+        def off
+          write(COMMAND_DISPLAYCONTROL | FLAG_DISPLAYOFF)
+        end
+
+        #
+        # Send a low-level command to the display
+        #
+        def write(cmd, mode = 0)
+          write_four_bits(mode | (cmd & 0xF0))
+          write_four_bits(mode | ((cmd << 4) & 0xF0))
+        end
+
       private
-      
+
         # commands
         COMMAND_CLEARDISPLAY   = 0x01
         COMMAND_RETURNHOME     = 0x02
@@ -102,6 +125,20 @@ module I2C
           end
         end
 
+        class Cursor
+          def initialize(display)
+            @display = display
+          end
+
+          def on
+            @display.write(COMMAND_DISPLAYCONTROL | FLAG_CURSORON)
+          end
+
+          def off
+            @display.write(COMMAND_DISPLAYCONTROL | FLAG_CURSOROFF)
+          end
+        end
+
         def init_sequence
           write(0x03)
           write(0x03)
@@ -109,8 +146,9 @@ module I2C
           write(0x02)
 
           write(COMMAND_FUNCTIONSET | FLAG_2LINE | FLAG_5x8DOTS | FLAG_4BITMODE)
-          write(COMMAND_DISPLAYCONTROL | FLAG_DISPLAYON)
-          write(COMMAND_CLEARDISPLAY)
+
+          on
+          clear
           write(COMMAND_ENTRYMODESET | FLAG_ENTRYLEFT)
           sleep(0.2)
         end
@@ -128,14 +166,6 @@ module I2C
         def write_four_bits(data)
           @device.write(data | FLAG_BACKLIGHT)
           strobe(data)
-        end
-
-        #
-        # Write a command to lcd
-        #
-        def write(cmd, mode = 0)
-          write_four_bits(mode | (cmd & 0xF0))
-          write_four_bits(mode | ((cmd << 4) & 0xF0))
         end
       end
     end
