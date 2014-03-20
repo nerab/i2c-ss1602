@@ -1,6 +1,6 @@
-# Driver for the SainSmart 1602 LCD display
+# SainSmart 1602 I2C driver
 
-This is a Ruby driver for the SainSmart 1602 LCD display with I2C adapter, ported from [raspi-gpio](https://github.com/paulbarber/raspi-gpio/blob/master/lcd_display.py).
+This is a Ruby driver for the SainSmart 1602 LCD display with I2C adapter. The code was partially ported from [raspi-gpio](https://github.com/paulbarber/raspi-gpio/blob/master/lcd_display.py).
 
 ## Installation
 
