@@ -57,9 +57,23 @@ module I2C
         BIT_RW = 0b00000010 # Read/Write bit
         BIT_RS = 0b00000001 # Register select bit
 
-        def initialize(bus_name, device_address)
-          @bus = I2C.create(bus_name)
-          @address = device_address
+        class BusDevice
+          def initialize(bus, address)
+            @bus, @address = bus, address
+          end        
+          
+          def write(data)
+            @bus.write(@address, data)
+          end
+        end
+
+        def initialize(bus_or_bus_name, device_address)
+          if bus_or_bus_name.respond_to?(:write) 
+            @device = BusDevice.new(bus_or_bus_name, device_address)
+          else
+            @device = BusDevice.new(I2C.create(bus_or_bus_name), device_address)
+          end
+          
           init_sequence
         end
 
@@ -101,14 +115,14 @@ module I2C
         # Clocks EN to latch command
         #
         def strobe(data)
-          @bus.write(@address, data | BIT_EN | FLAG_BACKLIGHT)
+          @device.write(data | BIT_EN | FLAG_BACKLIGHT)
           sleep(0.0005)
-          @bus.write(@address, ((data & ~BIT_EN) | FLAG_BACKLIGHT))
+          @device.write(((data & ~BIT_EN) | FLAG_BACKLIGHT))
           sleep(0.001)
         end
 
         def write_four_bits(data)
-          @bus.write(@address, data | FLAG_BACKLIGHT)
+          @device.write(data | FLAG_BACKLIGHT)
           strobe(data)
         end
 
