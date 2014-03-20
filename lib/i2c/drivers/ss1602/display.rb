@@ -11,6 +11,41 @@ module I2C
       # Parts copied from https://github.com/paulbarber/raspi-gpio/blob/master/lcd_display.py
       #
       class Display
+        attr_reader :lines
+
+        def initialize(bus_or_bus_name, device_address)
+          if bus_or_bus_name.respond_to?(:write)
+            @device = BusDevice.new(bus_or_bus_name, device_address)
+          else
+            @device = BusDevice.new(I2C.create(bus_or_bus_name), device_address)
+          end
+
+          @lines = 0..1
+          init_sequence
+        end
+
+        def clear
+          write(COMMAND_CLEARDISPLAY)
+          write(COMMAND_RETURNHOME)
+        end
+
+        def text(string, line)
+          case line
+          when 0
+            write(0x80)
+          when 1
+            write(0xC0)
+          else
+            raise "Only lines #{@lines} are supported"
+          end
+
+          string.each_char do |c|
+            write(c.ord, BIT_RS)
+          end
+        end
+
+      private
+      
         # commands
         COMMAND_CLEARDISPLAY   = 0x01
         COMMAND_RETURNHOME     = 0x02
@@ -60,43 +95,12 @@ module I2C
         class BusDevice
           def initialize(bus, address)
             @bus, @address = bus, address
-          end        
-          
+          end
+
           def write(data)
             @bus.write(@address, data)
           end
         end
-
-        def initialize(bus_or_bus_name, device_address)
-          if bus_or_bus_name.respond_to?(:write) 
-            @device = BusDevice.new(bus_or_bus_name, device_address)
-          else
-            @device = BusDevice.new(I2C.create(bus_or_bus_name), device_address)
-          end
-          
-          init_sequence
-        end
-
-        def clear
-          write(COMMAND_CLEARDISPLAY)
-          write(COMMAND_RETURNHOME)
-        end
-
-        def text(string, line)
-          if line == 0
-            write(0x80)
-          elsif line == 1
-            write(0xC0)
-          else
-            raise "Only line 0 or 1 are supported"
-          end
-
-          string.each_char do |c|
-            write(c.ord, BIT_RS)
-          end
-        end
-
-      private
 
         def init_sequence
           write(0x03)
@@ -137,3 +141,4 @@ module I2C
     end
   end
 end
+
