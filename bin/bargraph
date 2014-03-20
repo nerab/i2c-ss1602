@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+$:.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+require 'i2c/drivers/ss1602'
+
+display = I2C::Drivers::SS1602::Display.new('/dev/i2c-1', 0x27)
+
+x = ARGV[0].to_f
+r = (0..100)
+
+unless r.include?(x)
+  STDERR.puts "#{x} is not within the acceptable range of #{r}"
+  exit 1
+end
+
+char = ARGV[1] || '#'
+
+bar = char * (x / 100 * display.cols)
+clean_bar = sprintf('%-1$*2$s', bar, display.cols)
+display.text(clean_bar, 0)
