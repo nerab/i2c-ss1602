@@ -7,17 +7,19 @@ trap('INT'){
   exit
 }
 
+ARGF.binmode
+
 begin
   display = I2C::Drivers::SS1602::Display.new('/dev/i2c-1', 0x27)
 
   ARGF.each do |line|
     line.split.each do |arg|
-      display.clear
-      display.text(arg, 0)
-      sleep 0.8
+      display.off
+      display.text(arg, 0, true)
+      display.on
+      sleep 0.5
     end
   end
 ensure
   display.clear if display
 end
-
