@@ -6,20 +6,28 @@ This is a Ruby driver for the SainSmart 1602 LCD display with I2C adapter. The c
 
 Add this line to your application's Gemfile:
 
-    gem 'i2c-ss1602'
+```
+gem 'i2c-ss1602'
+```
 
 And then execute:
 
-    $ bundle
+```
+$ bundle
+```
 
 Or install it yourself as:
 
-    $ gem install i2c-ss1602
+```
+$ gem install i2c-ss1602
+```
 
 ## Usage
 
-      require 'i2c/drivers/ss1602'
-      display = I2C::Drivers::SS1602::Display.new('/dev/i2c-1', 0x27)
-      display.clear
-      display.text('Hello', 0)
-      display.text('World', 1)
+```ruby
+require 'i2c/drivers/ss1602'
+display = I2C::Drivers::SS1602::Display.new('/dev/i2c-1', 0x27)
+display.clear
+display.text('Hello', 0)
+display.text('World', 1)
+```

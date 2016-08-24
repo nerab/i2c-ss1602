@@ -1,0 +1,8 @@
+# Changelog for i2c-ss1602
+
+## v0.0.2
+* Update for Ruby 2.3
+* First release as Rubygem
+
+## v0.0.1
+* Initial revision
